@@ -30,8 +30,10 @@ public class ServidorChat {
 		
 		if(!servidor.estaAbierto()) {
 			servidor.abrirServidor();
+			System.out.println("SERVIDOR ABIERTO");
 		}else {
 			servidor.cerrarServidor();
+			System.out.println("SERVIDOR CERRADO");
 			servidor = null;
 		}
 		
