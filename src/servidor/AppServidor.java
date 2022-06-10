@@ -7,7 +7,7 @@ public class AppServidor {
 	
 	public static void main(String[] args) throws IOException {
 		
-		VentanaServidor2 servidor =  new VentanaServidor2();
+		ServidorChat servidor =  new ServidorChat();
 	    
 	}
 }

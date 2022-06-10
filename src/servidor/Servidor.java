@@ -13,9 +13,9 @@ public class Servidor extends Thread{
 	private HashMap<String, HiloServidor> usuarios;
 	private HashMap<String, Sala> salas;
 	private boolean abierto = false;
-	private VentanaServidor2 ventana;
+	private ServidorChat ventana;
 	
-	public Servidor(int puerto,VentanaServidor2 ventana) throws IOException {
+	public Servidor(int puerto,ServidorChat ventana) throws IOException {
 		servidor = new ServerSocket(puerto);
 		usuarios = new HashMap<String, HiloServidor>();
 		salas = new HashMap<String, Sala>();

@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
-public class VentanaServidor2 {
+public class ServidorChat {
 	public int puerto;
 	
-	public VentanaServidor2 ventana;
+	public ServidorChat ventana;
 	
 	public Servidor servidor;
 	public void ingresarDatos() {
@@ -19,7 +19,7 @@ public class VentanaServidor2 {
 	    puerto = Integer.parseInt(entradaTeclado);
 	}
 	
-	public VentanaServidor2() throws IOException {
+	public ServidorChat() throws IOException {
 		this.ventana = this;
 	    ingresarDatos();
 		if (servidor == null) {
