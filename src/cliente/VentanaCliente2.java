@@ -6,7 +6,7 @@ public class VentanaCliente2 {
 
 
 	private int puerto;
-	private String ip = "127.0.0";
+	private String ip = "127.0.0.1";
 	private Cliente cliente;
 	private VentanaCliente2 instancia;
 	private String nombre;

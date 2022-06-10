@@ -11,14 +11,15 @@ public class Servidor extends Thread{
 	private ServerSocket servidor;
 	private Servidor instancia;
 	private HashMap<String, HiloServidor> usuarios;
-	//private ArrayList<String> usuarios = new ArrayList<>();
 	private HashMap<String, Sala> salas;
 	private boolean abierto = false;
+	private VentanaServidor2 ventana;
 	
-	public Servidor(int puerto) throws IOException {
+	public Servidor(int puerto,VentanaServidor2 ventana) throws IOException {
 		servidor = new ServerSocket(puerto);
 		usuarios = new HashMap<String, HiloServidor>();
-		//usuarios = new ArrayList<String>();
+		salas = new HashMap<String, Sala>();
+		this.ventana = ventana;
 		this.instancia = this;
 	}
 
@@ -49,6 +50,9 @@ public class Servidor extends Thread{
 		abierto = false;
 		servidor = null;
 		usuarios = null;
+		salas = null;
+		actualizarCantidadUsuarios();
+		actualizarCantidadSalas();
 	}
 	
 	public boolean existeUsuario(String nombre) {
@@ -83,7 +87,18 @@ public class Servidor extends Thread{
 		
 		enviarMensajeATodos(mensaje);
 	}
-
+	
+	public void enviarUsuariosSala(String nombreSala) {
+		String mensaje = "CargarUsuarios|"+nombreSala+"|";
+		
+		for(String nombre : obtenerUsuariosSala(nombreSala)) {
+			mensaje+=
+					nombre+
+					"|";
+		}
+		
+		enviarMensajeASala(nombreSala, mensaje);
+	}
 	
 	public Set<String> obtenerUsuariosSala(String nombre){
 		return this.salas.get(nombre).obtenerUsuarios();
@@ -93,8 +108,42 @@ public class Servidor extends Thread{
 		return this.usuarios.values();
 	}
 	
+	public Collection<HiloServidor> obtenerHilosUsuariosSala(String nombre){
+		return this.salas.get(nombre).obtenerHilosUsuarios();
+	}
+	
+	public void agregarSala(String nombre) {
+		this.salas.put(nombre, new Sala());
+	}
+	
+	public boolean existeSala(String nombre) {
+		return this.salas.containsKey(nombre);
+	}
+	
 	public void eliminarUsuario(String nombre) {
 		this.usuarios.remove(nombre);
+	}
+	
+	public void eliminarUsuarioSala(String nombreSala, String nombre) {
+		this.salas.get(nombreSala).eliminarUsuario(nombre);
+	}
+	
+	public void actualizarCantidadUsuarios() {
+		//ventana.actualizarCantidadUsuarios((usuarios != null) ? usuarios.size() : 0);
+	}
+	
+	public void actualizarCantidadSalas() {
+		//ventana.actualizarCantidadSalas((salas != null) ? salas.size() : 0);
+	}
+	
+	public void enviarMensajeAPrivado(String nombreUsuario, String mensaje) {
+		this.usuarios.get(nombreUsuario).enviarMensaje(mensaje);
+	}
+	
+	public void enviarMensajeASala(String nombreSala, String mensaje) {
+		for(HiloServidor hilo : obtenerHilosUsuariosSala(nombreSala)) {
+			hilo.enviarMensaje(mensaje);
+		}
 	}
 	
 	public void enviarMensajeATodos(String mensaje) {
