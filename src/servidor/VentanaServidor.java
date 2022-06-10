@@ -81,7 +81,7 @@ public class VentanaServidor extends JFrame{
 							return;
 						}
 						
-						servidor = new Servidor(puerto, ventana);
+						//servidor = new Servidor(puerto, ventana);
 					}
 					
 					if(!servidor.estaAbierto()) {
@@ -100,7 +100,7 @@ public class VentanaServidor extends JFrame{
 						puertoJTF.setText("");
 						conectarJB.setText("Iniciar");
 					}
-				} catch (NumberFormatException | IOException  e) {
+				} catch (NumberFormatException  e) {
 					puertoJTF.setBorder(BorderFactory.createLineBorder(Color.RED));
 				}
 			}

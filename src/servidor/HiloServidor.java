@@ -40,63 +40,24 @@ public class HiloServidor extends Thread{
 					enviarMensaje("LogiNOK|"+cadena[1]);
 					this.nombre = cadena[1];
 					servidor.agregarUsuario(nombre, this);
-					servidor.actualizarCantidadUsuarios();
 					servidor.enviarSalas();
 				}else {
 					enviarMensaje("LogiNErroR");
 				}
 				break;
-				
-			case "CrearSalA":
-				if(!servidor.existeSala(cadena[1])) {
-					enviarMensaje("CrearSalAOK");
-					servidor.agregarSala(cadena[1]);
-					servidor.actualizarCantidadSalas();
-					servidor.enviarSalas();
-				}else {
-					enviarMensaje("CrearSalAErroR");
-				}
-				break;
-				
-			case "UnirSalA":
-				if(!servidor.existeUsuarioEnSala(cadena[1], this.nombre)) {
-					servidor.agregarUsuarioSala(cadena[1], this.nombre, this);
-					enviarMensaje("UnirseSalaOK|"+cadena[1]);
-					servidor.enviarSalas();
-					servidor.enviarUsuariosSala(cadena[1]);
-				}else {
-					enviarMensaje("UnirseSalaErroR");
-				}
-				break;
-				
-			case "MensajeP":
-				if(servidor.existeSala(cadena[1]) && servidor.existeUsuarioEnSala(cadena[1], cadena[2])
-						&& servidor.existeUsuarioEnSala(cadena[1], cadena[3])) {
-					enviarMensaje(mensaje);
-					servidor.enviarMensajeAPrivado(cadena[3], mensaje);
-				}else {
-					enviarMensaje("MensajePErroR");
-				}
-				break;
-				
+
 			case "MensajeS":
-				if(servidor.existeSala(cadena[1]) && servidor.existeUsuarioEnSala(cadena[1], cadena[2])) {
-					servidor.enviarMensajeASala(cadena[1], mensaje);
-				}else {
-					enviarMensaje("MensajeSErroR");
-				}
-				break;
-				
-			case "DesconectarSalA":
-				servidor.eliminarUsuarioSala(cadena[1], nombre);
-				servidor.enviarSalas();
-				servidor.enviarUsuariosSala(cadena[1]);
+				servidor.enviarMensajeATodos(mensaje);
+//				if(servidor.existeSala(cadena[1]) && servidor.existeUsuarioEnSala(cadena[1], cadena[2])) {
+//					servidor.enviarMensajeATodos(cadena[1], mensaje);
+//				}else {
+//					enviarMensaje("MensajeSErroR");
+//				}
 				break;
 				
 			case "DesconectaR":
 				enviarMensaje("SaliR");
 				servidor.eliminarUsuario(nombre);
-				servidor.actualizarCantidadUsuarios();
 				break;
 				
 			default:
