@@ -23,8 +23,6 @@ public class ServidorChat {
 		this.ventana = this;
 	    ingresarDatos();
 		if (servidor == null) {
-			
-			System.out.println(puerto);
 			servidor = new Servidor(puerto, ventana);
 		}
 		
