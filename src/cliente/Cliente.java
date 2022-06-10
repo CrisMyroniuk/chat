@@ -32,6 +32,7 @@ public class Cliente {
 	public void conectar(String nombre) {
 		try {
 			new DataOutputStream(socket.getOutputStream()).writeUTF("LogiN|"+nombre);
+			System.out.println("CONEXION EXITOSA");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
