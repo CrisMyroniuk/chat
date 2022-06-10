@@ -28,7 +28,13 @@ public class ServidorChat {
 			servidor = new Servidor(puerto, ventana);
 		}
 		
-		servidor.abrirServidor();
+		if(!servidor.estaAbierto()) {
+			servidor.abrirServidor();
+		}else {
+			servidor.cerrarServidor();
+			servidor = null;
+		}
+		
 	}
 	
     
