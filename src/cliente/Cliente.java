@@ -8,11 +8,11 @@ import java.util.HashMap;
 public class Cliente {
 	private Socket socket;
 	private String nombre;
-	private VentanaCliente ventana;
+	private VentanaCliente2 ventana;
 	private VentanaLooby ventanaLobby;
 	private HashMap<String, VentanaSala> salas = new HashMap<String, VentanaSala>();
 	
-	public Cliente(VentanaCliente ventana, String ip, int host) {
+	public Cliente(VentanaCliente2 ventana, String ip, int host) {
 		try {
 			socket = new Socket(ip, host);
 		
@@ -21,7 +21,7 @@ public class Cliente {
 			new HiloCliente(this, socket).start();
 	
 		}catch(Exception e) {
-			ventana.mostrarMensaje("Error al querer crear la conexion.");
+			//ventana.mostrarMensaje("Error al querer crear la conexion.");
 		}
 	}
 	
@@ -100,10 +100,10 @@ public class Cliente {
 	}
 	
 	public void mostrarMensajeError(String mensaje) {
-		if(ventana != null)
+		/*if(ventana != null)
 			ventana.mostrarMensaje(mensaje);
 		else
-			ventanaLobby.mostrarMensaje(mensaje);
+			ventanaLobby.mostrarMensaje(mensaje);*/
 	}
 	
 	public void cargarSalas(String[] salas) {
@@ -162,7 +162,7 @@ public class Cliente {
 	public void cerrarVentana() {
 		this.ventanaLobby = new VentanaLooby(this);
 		this.ventanaLobby.setVisible(true);
-		ventana.dispose();
+		//ventana.dispose();
 		ventana = null;
 	}
 }

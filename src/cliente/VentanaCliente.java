@@ -69,7 +69,7 @@ public class VentanaCliente extends JFrame{
 				}
 					
 				if(cliente == null) {
-					cliente = new Cliente(instancia, ipJTF.getText(), Integer.parseInt(puertoJTF.getText()));
+					//cliente = new Cliente(instancia, ipJTF.getText(), Integer.parseInt(puertoJTF.getText()));
 				}
 				
 				cliente.conectar(nombreJTF.getText());
