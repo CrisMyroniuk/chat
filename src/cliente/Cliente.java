@@ -1,169 +1,47 @@
 package cliente;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+// Importante: Checkear enconding -> UTF8
 
 public class Cliente {
-	private Socket socket;
-	private String nombre;
-	private VentanaCliente2 ventana;
-	private VentanaLooby ventanaLobby;
-	private HashMap<String, VentanaSala> salas = new HashMap<String, VentanaSala>();
-	
-	public Cliente(VentanaCliente2 ventana, String ip, int host) {
-		try {
-			socket = new Socket(ip, host);
-		
-			this.ventana = ventana;
-			
-			new HiloCliente(this, socket).start();
-	
-		}catch(Exception e) {
-			//ventana.mostrarMensaje("Error al querer crear la conexion.");
-		}
-	}
-	
-	public void cargarNombre(String nombre) {
-		this.nombre = nombre;
-	}
-	
-	public void conectar(String nombre) {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF("LogiN|"+nombre);
-			System.out.println("CONEXION EXITOSA");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void crearSala(String nombre) {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF("CrearSalA|"+nombre);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void unirseSala(String nombre) {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF("UnirSalA|"+nombre);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void enviarMensajePrivado(String nombreSala, String nombreUsuario, String fecha, String mensaje) {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF(
-					"MensajeP|"+
-					nombreSala+"|"+
-					this.nombre+"|"+
-					nombreUsuario+"|"+
-					fecha+"|"+
-					mensaje);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void enviarMensajeSala(String nombreSala, String fecha, String mensaje) {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF(
-					"MensajeS|"+
-					nombreSala+"|"+
-					this.nombre+"|"+
-					fecha+"|"+
-					mensaje);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void cerrarConexion() {
-		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF("DesconectaR");
-			new DataOutputStream(socket.getOutputStream()).writeUTF("SaliR");
 
-			socket = null;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public Cliente(String ip, int puerto) throws UnknownHostException, IOException {
+		// Conecta a un Server. Si no esta activo da Exception:
+		// java.net.ConnectException
+		Socket socket = new Socket(ip, puerto);
+
+		// Flujos de información
+		DataInputStream entrada = new DataInputStream(socket.getInputStream());
+		DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
+
+		// Recibir mensaje
+		System.out.println("Soy el cliente número: " + entrada.readUTF());
+
+		// Enviar mensaje escrito por consola
+		Scanner scanner = new Scanner(System.in);
+		String mensajeConsola = scanner.nextLine();
+		salida.writeUTF(mensajeConsola);
+
+		// Cierre de recursos
+		scanner.close();
+		entrada.close();
+		salida.close();
+		socket.close();
+		System.out.println("Me cierro");
 	}
-	
-	public void cerrarConexionSala(String nombreSala) {
+
+	public static void main(String[] args) {
 		try {
-			new DataOutputStream(socket.getOutputStream()).writeUTF("DesconectarSalA|"+nombreSala);
+			new Cliente("localhost", 20000);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void mostrarMensajeError(String mensaje) {
-		/*if(ventana != null)
-			ventana.mostrarMensaje(mensaje);
-		else
-			ventanaLobby.mostrarMensaje(mensaje);*/
-	}
-	
-	public void cargarSalas(String[] salas) {
-		ventanaLobby.cargarSalas(salas);
-	}
-	
-	public void abrirSala(String nombreSala) {
-		this.salas.put(nombreSala, new VentanaSala(this, nombreSala));
-		this.salas.get(nombreSala).setVisible(true);
-	}
-	
-	public void cerrarSala(String nombreSala) {
-		this.salas.remove(nombreSala);
-	}
-	
-	public int obtenerCantidadSalas() {
-		return salas.size();
-	}
-	
-	public void cargarUsuariosSala(String nombreSala, String[] usuarios) {
-		if(this.salas.containsKey(nombreSala)) {
-			this.salas.get(nombreSala).cargarUsuarios(usuarios);
-		}else {
-			ventanaLobby.mostrarMensaje("Error al querer cargar los usuarios de la sala " + nombreSala + ".");
-		}
-	}
-	
-	public void agregarMensajePrivado(String nombreSala, String usuarioPropio, String usuarioPrivado, String fecha, String mensaje) {
-		if(this.salas.containsKey(nombreSala)) {
-			this.salas.get(nombreSala).agregarMensaje(
-					usuarioPropio + " [Para " + usuarioPrivado + "] {" +fecha+ "} > " + mensaje
-				);
-		}else {
-			ventanaLobby.mostrarMensaje("Error al querer agregar un mensaje privado.");
-		}
-	}
-	
-	public void agregarMensajeSala(String nombreSala, String usuario, String fecha, String mensaje) {
-		if(this.salas.containsKey(nombreSala)) {
-			this.salas.get(nombreSala).agregarMensaje(
-					usuario + " {"+ fecha + "} > " + mensaje
-				);
-		}else {
-			ventanaLobby.mostrarMensaje("Error al querer cargar un mensaje a la sala.");
-		}
-	}
-		
-	public boolean seleccioneAMiMismo(String nombre) {
-		return this.nombre.equals(nombre);
-	}
-	
-	public boolean tieneSalas() {
-		return (this.salas.size() > 0) ? true : false;
-	}
-	
-	public void cerrarVentana() {
-		this.ventanaLobby = new VentanaLooby(this);
-		this.ventanaLobby.setVisible(true);
-		//ventana.dispose();
-		ventana = null;
-	}
+
 }
