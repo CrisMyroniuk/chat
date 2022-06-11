@@ -26,7 +26,7 @@ public class Servidor {
 
 			// El read también es bloqueante, como el accept
 			String nombreCliente = entrada.readUTF();
-			System.out.println("El nombre del cliente \"" + numeroCliente + "\" es: \"" + nombreCliente + "\"");
+			System.out.println(nombreCliente + "ingreso al chat..");
 			
 			String mensaje = "";
 			
