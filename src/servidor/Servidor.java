@@ -21,12 +21,12 @@ public class Servidor {
 			DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
 			DataInputStream entrada = new DataInputStream(socket.getInputStream());
 
-			System.out.println("Conectado cliente: " + numeroCliente);
+			//System.out.println("Conectado cliente: " + numeroCliente);
 			salida.writeUTF("" + numeroCliente);
 
 			// El read también es bloqueante, como el accept
 			String nombreCliente = entrada.readUTF();
-			System.out.println(nombreCliente + "ingreso al chat..");
+			System.out.println(nombreCliente + " ingreso al chat..");
 			
 			String mensaje = "";
 			

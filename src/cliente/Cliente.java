@@ -23,7 +23,7 @@ public class Cliente {
 		DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
 
 		// Recibir mensaje
-		System.out.println("Soy el cliente número: " + entrada.readUTF());
+		//System.out.println("Soy el cliente número: " + entrada.readUTF());
 		
 		System.out.println("Mi nombre es: ");
 
