@@ -25,8 +25,18 @@ public class Servidor {
 			salida.writeUTF("" + numeroCliente);
 
 			// El read también es bloqueante, como el accept
-			System.out.println("Cliente \"" + numeroCliente + "\" dice: \"" + entrada.readUTF() + "\"");
-
+			String nombreCliente = entrada.readUTF();
+			System.out.println("El nombre del cliente \"" + numeroCliente + "\" es: \"" + nombreCliente + "\"");
+			
+			String mensaje = "";
+			
+			while(!mensaje.equals("Salir")) {
+				mensaje = entrada.readUTF();
+				System.out.println(nombreCliente + " dice \"" + mensaje + "\"");
+			}
+			
+			entrada.readUTF(); //Para avisar que el cliente salio
+			
 			// Se cierran recursos
 			entrada.close();
 			salida.close();
