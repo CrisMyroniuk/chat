@@ -33,6 +33,7 @@ public class Servidor {
 					salida.writeUTF("aceptado");
 					nuevo = new HiloCliente(nombre, entrada, salida, this);
 					clientes.put(nombre, nuevo);
+					enviador.actualizarMensajes(nombre);
 					addMensaje(new Mensaje("info", nombre + " entro al chat"));
 					System.out.println("Conectado cliente: " + nombre);
 					nuevo.start();

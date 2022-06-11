@@ -29,6 +29,7 @@ public class HiloEscuchador extends Thread{
 	}
 	
 	private void salir() {
+		conectado = false;
 		cliente.cerrar();
 	}
 }

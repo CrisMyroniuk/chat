@@ -20,7 +20,8 @@ public class HiloCliente extends Thread{
 		this.salida = salida;
 	}
 	
-	public void run(){
+	@Override
+	public void run() {
 		String mensaje;
 		
 		while(true) {

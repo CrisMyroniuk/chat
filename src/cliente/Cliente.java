@@ -52,6 +52,7 @@ public class Cliente {
 		String mensaje;
 		escuchador.start();
 		while (conectado) {
+			System.out.println("> ");
 			mensaje = teclado.nextLine();
 			try {
 				salida.writeUTF(mensaje);
