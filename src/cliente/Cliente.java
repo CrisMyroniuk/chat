@@ -12,44 +12,64 @@ import java.util.Scanner;
 
 public class Cliente {
 	
+	private HiloEscuchador escuchador;
 	private String nombre;
+	private DataInputStream entrada;
+	private DataOutputStream salida;
+	private Socket socket;
+	private Scanner teclado;
+	private boolean conectado;
 	
 	public Cliente(String ip, int puerto) throws UnknownHostException, IOException {
-		// Conecta a un Server. Si no esta activo da Exception:
-		// java.net.ConnectException
-		Socket socket = new Socket(ip, puerto);
-
-		// Flujos de información
-		DataInputStream entrada = new DataInputStream(socket.getInputStream());
-		DataOutputStream salida = new DataOutputStream(socket.getOutputStream());
-
-		// Recibir mensaje
-		//System.out.println("Soy el cliente número: " + entrada.readUTF());
+		socket = new Socket(ip, puerto);
+		entrada = new DataInputStream(socket.getInputStream());
+		salida = new DataOutputStream(socket.getOutputStream());
 		
-		System.out.println("Mi nombre es: ");
-
-		// Enviar mensaje escrito por consola
-		Scanner scanner = new Scanner(System.in);
-		String nombre = scanner.nextLine();
+		escuchador = new HiloEscuchador(entrada, this);
 		
+		System.out.print("Ingresar nombre: ");
+		teclado = new Scanner(System.in);
+		String nombre = teclado.nextLine();
 		this.nombre = nombre;
 		salida.writeUTF(this.nombre);
-		System.out.println("Escribe algo...: ");
-		String mensaje = "";
-		while(!mensaje.equals("Salir")) {
-			mensaje = scanner.nextLine();
-			salida.writeUTF(mensaje);
-			System.out.println("Escribe algo...: ");
+		
+		String respuesta = entrada.readUTF();
+		if (respuesta.equals("aceptado")) {
+			System.out.println("conectado");
+			conectado = true;
+			start();
+		}
+		else {
+			entrada.close();
+			salida.close();
+			teclado.close();
+			System.out.println("conexion rechazada");
 		}
 		
-		salida.writeUTF(nombre + " ha salido");
-		
-		// Cierre de recursos
-		scanner.close();
-		entrada.close();
-		salida.close();
-		socket.close();
-		System.out.println("Me cierro");
+	}
+	
+	public void start() {
+		String mensaje;
+		escuchador.start();
+		while (conectado) {
+			mensaje = teclado.nextLine();
+			try {
+				salida.writeUTF(mensaje);
+			} catch (IOException e) {
+				System.out.println("No se pudo enviar el mensaje");
+			}
+		}
+	}
+	
+	public synchronized void cerrar() {
+		conectado = false;
+		try {
+			entrada.close();
+			salida.close();
+		} catch (IOException e) {
+			System.out.println("No se pudo cerrar la entrada o la salida");
+		}
+		teclado.close();
 	}
 
 	public static void main(String[] args) {
