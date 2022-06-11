@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 
 public class Servidor {
 
@@ -32,7 +33,7 @@ public class Servidor {
 			
 			while(!mensaje.equals("Salir")) {
 				mensaje = entrada.readUTF();
-				System.out.println(nombreCliente + " dice \"" + mensaje + "\"");
+				System.out.println("["+nombreCliente+"]" + " : \"" + mensaje + "\"" + " - " + LocalDateTime.now());
 			}
 			
 			System.out.println(entrada.readUTF()); //Para avisar que el cliente salio
