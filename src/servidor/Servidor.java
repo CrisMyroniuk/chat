@@ -35,7 +35,7 @@ public class Servidor {
 				System.out.println(nombreCliente + " dice \"" + mensaje + "\"");
 			}
 			
-			entrada.readUTF(); //Para avisar que el cliente salio
+			System.out.println(entrada.readUTF()); //Para avisar que el cliente salio
 			
 			// Se cierran recursos
 			entrada.close();
